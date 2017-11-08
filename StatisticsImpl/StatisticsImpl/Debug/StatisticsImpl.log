@@ -1,0 +1,10 @@
+﻿  LinkList.h
+  正在生成代码...
+  正在跳过...(未检测到相关更改)
+  main.cpp
+Debug\LinkList.obj : warning LNK4042: 对象被多次指定；已忽略多余的指定
+main.obj : error LNK2019: 无法解析的外部符号 "int __cdecl Create_L(struct LNode * &,int)" (?Create_L@@YAHAAPAULNode@@H@Z)，该符号在函数 _main 中被引用
+main.obj : error LNK2019: 无法解析的外部符号 "void __cdecl PrintList_L(struct LNode *)" (?PrintList_L@@YAXPAULNode@@@Z)，该符号在函数 _main 中被引用
+main.obj : error LNK2019: 无法解析的外部符号 "int __cdecl ListReverse_L(struct LNode * &,int)" (?ListReverse_L@@YAHAAPAULNode@@H@Z)，该符号在函数 _main 中被引用
+main.obj : error LNK2019: 无法解析的外部符号 "int __cdecl DeleteElem_L(struct LNode *)" (?DeleteElem_L@@YAHPAULNode@@@Z)，该符号在函数 _main 中被引用
+D:\Microsoft\Projects\StatisticsImpl\Debug\StatisticsImpl.exe : fatal error LNK1120: 4 个无法解析的外部命令
