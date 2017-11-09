@@ -5,5 +5,6 @@ typedef struct BinTreeStruct {
 	BinTreeDataType data;
 	BinTreeStruct* left;
 	BinTreeStruct* right;
+	unsigned __int32 weight;
 	int depth;
 }BinTree;

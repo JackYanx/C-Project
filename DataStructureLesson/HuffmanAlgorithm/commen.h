@@ -5,6 +5,9 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <memory>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <Windows.h>
 
