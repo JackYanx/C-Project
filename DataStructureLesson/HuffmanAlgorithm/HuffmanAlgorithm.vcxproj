@@ -142,12 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BinTreeUtils.cpp" />
     <ClCompile Include="HuffmanDecoder.cpp" />
     <ClCompile Include="HuffmanEncoder.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinTreeStruct.h" />
+    <ClInclude Include="BinTreeUtils.h" />
     <ClInclude Include="commen.h" />
     <ClInclude Include="FileHeadStruct.h" />
     <ClInclude Include="HuffmanDecoder.h" />

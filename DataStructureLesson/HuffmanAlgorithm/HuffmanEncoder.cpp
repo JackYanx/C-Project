@@ -10,21 +10,25 @@ void HuffmanEncoder::generateFreqList() {
 }
 int HuffmanEncoder::getMinFreqElemSeq() {
 	BinTree* node = NULL;
-	int i;
-	unsigned char pos = 0;
-	BinTreeDataType minWeight = 255;//freqList[0]->weight;
+	int i,j,k;
+	int pos = 0;
+	BinTreeDataType minWeight = 255;
 	BinTreeDataType curWeight = 0;
-	for (i = 0; i < 256; i++) {
-		curWeight = freqList[(unsigned char)i]->weight;
-		if (curWeight != 0 && minWeight > curWeight) {
-			minWeight = curWeight;
-			pos = (unsigned char)i;
+	for (j = 0,k = 0; j < 256;j++) {
+		if (freqList[j]->weight != 0) {
+			k = 1;
+			break;
 		}
 	}
-	if (minWeight != 0) {
-		return pos;
+	if (k == 0) return -1;
+	for (i = 0; i < 256; i++) {
+		curWeight = freqList[i]->weight;
+		if (curWeight != 0 && minWeight > curWeight) {
+			minWeight = curWeight;
+			pos = i;
+		}
 	}
-	return -1;
+	return pos;
 }
 HuffmanEncoder::HuffmanEncoder() {
 
@@ -37,8 +41,8 @@ void HuffmanEncoder::init(string& s) {
 	int i;
 	for (i = 0; i < 256;i++) {
 		freqList[i] = new BinTree;
-		memset(freqList[i], 0, sizeof(BinTreeStruct));
-		freqList[i]->data = (unsigned char)i;
+		memset(freqList[i], 0, sizeof(BinTree));
+		freqList[i]->data = i;
 	}
 	int i1 = 1;
 }
@@ -82,11 +86,16 @@ BinTree* HuffmanEncoder::copyNode(BinTree* node) {
 	if (node == NULL) return NULL;
 	BinTree* p = new BinTree;
 	memcpy(p, node, sizeof(BinTree));
+	return p;
 }
 int HuffmanEncoder::encode() {
 	generateFreqList();
 	if (generateHFMTree() != 0) {
 		cout << __FUNCTION__;
+	}
+	else {
+		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree);
+		BinTreeTable* table = convertTreeToTable(hfmTree);
 	}
 
 	return 0;

@@ -1,6 +1,7 @@
 #pragma once
 #include "commen.h"
 #include "BinTreeStruct.h"
+#include "BinTreeUtils.h"
 class HuffmanEncoder {
 private:
 	string src;
@@ -14,6 +15,7 @@ private:
 	int generateHFMTree();
 	BinTree* getNewNode();
 	BinTree* copyNode(BinTree*);
+
 public:
 	HuffmanEncoder();
 	void init(string& s);

@@ -1,10 +1,19 @@
 #pragma once
 typedef unsigned char BinTreeDataType;
-typedef struct BinTreeStruct {
-	BinTreeStruct* par;
-	BinTreeDataType data;
-	BinTreeStruct* left;
-	BinTreeStruct* right;
+typedef struct BinTreeDynamicStruct {
+	BinTreeDynamicStruct* par;
+	BinTreeDynamicStruct* left;
+	BinTreeDynamicStruct* right;
 	unsigned __int32 weight;
-	int depth;
+	__int32 depth;
+	BinTreeDataType data;
 }BinTree;
+
+typedef struct BinTreeStaticStruct {
+	__int32 par;
+	__int32 left;
+	__int32 right;
+	__int32 depth;
+	unsigned __int32 weight;
+	BinTreeDataType data;
+}BinTreeTable;
