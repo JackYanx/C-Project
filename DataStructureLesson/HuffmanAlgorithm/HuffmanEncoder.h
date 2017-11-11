@@ -13,7 +13,6 @@ private:
 	void generateFreqList();
 	int getMinFreqElemSeq();
 	int generateHFMTree();
-	BinTree* getNewNode();
 	BinTree* copyNode(BinTree*);
 
 public:

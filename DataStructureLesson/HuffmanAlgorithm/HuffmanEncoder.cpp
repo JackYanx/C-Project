@@ -12,8 +12,8 @@ int HuffmanEncoder::getMinFreqElemSeq() {
 	BinTree* node = NULL;
 	int i,j,k;
 	int pos = 0;
-	BinTreeDataType minWeight = 255;
-	BinTreeDataType curWeight = 0;
+	unsigned __int32 minWeight = 0xFFFFFFFF;
+	unsigned __int32 curWeight = 0;
 	for (j = 0,k = 0; j < 256;j++) {
 		if (freqList[j]->weight != 0) {
 			k = 1;
@@ -77,11 +77,6 @@ int HuffmanEncoder::generateHFMTree() {
 	}
 	return -2;
 }
-BinTree* HuffmanEncoder::getNewNode() {
-	BinTree* p = new BinTree;
-	memset(p, 0, sizeof(BinTree));
-	return p;
-}
 BinTree* HuffmanEncoder::copyNode(BinTree* node) {
 	if (node == NULL) return NULL;
 	BinTree* p = new BinTree;
@@ -94,8 +89,11 @@ int HuffmanEncoder::encode() {
 		cout << __FUNCTION__;
 	}
 	else {
-		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree);
+		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree) << endl;
 		BinTreeTable* table = convertTreeToTable(hfmTree);
+		cout << getBinTreeNodeNum(table, 0) << endl << getBinTreeLeavesNum(table, 0) << endl;
+		BinTree* temp = convertTableToTree(table);
+		cout << getBinTreeNodeNum(temp) << endl << getBinTreeLeavesNum(temp) << endl;
 	}
 
 	return 0;
