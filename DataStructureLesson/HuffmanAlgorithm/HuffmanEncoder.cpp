@@ -38,10 +38,13 @@ void HuffmanEncoder::init(string& s) {
 	srcarr = (char*)s.c_str();
 	srclen = s.length();
 	memset(freqList, 0, 256 * sizeof(BinTree*));
+	memset(prefixCode, 0, 256);
 	int i;
 	for (i = 0; i < 256;i++) {
 		freqList[i] = new BinTree;
+		prefixCode[i] = new char[256];
 		memset(freqList[i], 0, sizeof(BinTree));
+		memset(prefixCode[i], 0xFF, 256);
 		freqList[i]->data = i;
 	}
 	int i1 = 1;
@@ -77,6 +80,11 @@ int HuffmanEncoder::generateHFMTree() {
 	}
 	return -2;
 }
+
+int HuffmanEncoder::generatePrefixCodeTable() {
+	return 0;
+}
+
 BinTree* HuffmanEncoder::copyNode(BinTree* node) {
 	if (node == NULL) return NULL;
 	BinTree* p = new BinTree;
@@ -90,10 +98,24 @@ int HuffmanEncoder::encode() {
 	}
 	else {
 		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree) << endl;
+		setBinTreeDepth(hfmTree, 1);
 		BinTreeTable* table = convertTreeToTable(hfmTree);
-		cout << getBinTreeNodeNum(table, 0) << endl << getBinTreeLeavesNum(table, 0) << endl;
+		//cout << getBinTreeNodeNum(table, 0) << endl << getBinTreeLeavesNum(table, 0) << endl << getBinTreeDepth(hfmTree) << endl;
 		BinTree* temp = convertTableToTree(table);
-		cout << getBinTreeNodeNum(temp) << endl << getBinTreeLeavesNum(temp) << endl;
+		//cout << "+++" << getBinTreeNodeNum(temp) << endl << getBinTreeLeavesNum(temp) << endl << getBinTreeDepth(table) << endl;
+		cout << compareTree(hfmTree, temp);
+		/*应以二进制打开文件,否则写入0x0A(换行符'\n')时Windows会很智能的写入为0x0D 0x0A('\r\n')*/
+		cin.get();
+		FILE* fp = fopen("D:\\$111.dat", "wb+");
+		if (fp == NULL) {
+			cout << "OPEN FAILED!\n";
+		}
+		else {
+			cout << "OPEN SUCCEEDED!\n";
+			fwrite(table, sizeof(BinTreeTable), getBinTreeNodeNum(table, 0), fp);
+			fflush(fp);
+			fclose(fp);
+		}
 	}
 
 	return 0;
