@@ -1,5 +1,4 @@
 #include "HuffmanEncoder.h"
-unsigned char buff[102400];
 
 int HuffmanEncoder::openFile() {
 	originalFile.open(originalFilePath, ios::in | ios::binary);
@@ -7,20 +6,24 @@ int HuffmanEncoder::openFile() {
 		cout << "原文件打开失败!\n";
 		return -1;
 	}
-	zippedFile.open(zippedFilePath, ios::out | ios::binary);
+	zippedFile.open(zippedFilePath, ios::out | ios::binary | ios::trunc);
 	if (!zippedFile.is_open()) {
 		cout << "创建并写入文件失败!\n";
 		return -1;
 	}
 	originalFile.seekg(0, originalFile.end);
 	unsigned __int32 fileSize = originalFile.tellg();
+	oFileSize = fileSize;
+	return 0;
 }
 
 void HuffmanEncoder::generateFreqList() {
 	unsigned __int32 i;
 	unsigned char c;
-	for (i = 0; i < srclen; i++) {
-		c = (unsigned char)srcarr[i];
+	originalFile.clear();
+	originalFile.seekg(0, ios::beg);
+	for (i = 0; i < oFileSize; i++) {
+		originalFile.read((char*)&c, 1);
 		freqList[c]->weight++;
 	}
 }
@@ -50,22 +53,22 @@ HuffmanEncoder::HuffmanEncoder() {
 
 }
 
-void HuffmanEncoder::build(char*, char*) {
-
+void HuffmanEncoder::build(char* c1, char* c2) {
+	originalFilePath.append(c1);
+	zippedFilePath.append(c2);
+	init();
 }
 
-void HuffmanEncoder::build(char*) {
-
-}
-
-void HuffmanEncoder::init(string& s) {
-	src = s;
-	srcarr = (char*)s.c_str();
-	srclen = s.length();
-	buf = buff;
-	memset(buf, 0, 102400);
+void HuffmanEncoder::init() {
+	//src = s;
+	//srcarr = (char*)s.c_str();
+	//srclen = s.length();
+	//buf = buff;
+	//memset(buf, 0, 102400);
+	status = 0;
 	memset(freqList, 0, 256 * sizeof(BinTree*));
 	memset(prefixCode, 0, 256);
+	memset(&zipFileHeadTag, 0, sizeof(ZIPFileInfo));
 	int i;
 	for (i = 0; i < 256;i++) {
 		freqList[i] = new BinTree;
@@ -74,7 +77,25 @@ void HuffmanEncoder::init(string& s) {
 		memset(prefixCode[i], 0xFF, 256);
 		freqList[i]->data = i;
 	}
-	int i1 = 1;
+	if (openFile() != 0) {
+		status = -1;
+		return;
+	}
+	/*先向文件写入大小为sizeof(ZIPFileInfo)内容为0的内存,预留空间*/
+	//zippedFile.write((char*)&zipFileHeadTag, sizeof(ZIPFileInfo));
+
+	{
+		/*文件标签,即"WT"这两个字符*/
+		zipFileHeadTag.zipTag = 0x5457;
+		/*文件版本,当前为1.00*/
+		zipFileHeadTag.zipVer = 0x0001;
+		/*原文件大小*/
+		zipFileHeadTag.oFileSize = oFileSize;
+		/*单条字典记录大小*/
+		zipFileHeadTag.cDictItemSize = sizeof(BinTreeTable);
+		/*字典位置偏移量*/
+		zipFileHeadTag.cDictPosi = sizeof(ZIPFileInfo);
+	}
 }
 int HuffmanEncoder::generateHFMTree() {
 	int min1, min2;
@@ -171,12 +192,19 @@ int HuffmanEncoder::writeByteStream() {
 	__int32 tmplen;
 	__int32 pLen;
 	__int32 scale;
+	unsigned char a, b;
 	unsigned char* p = tmp;
-	unsigned char a;
+	char* q = (char*)&b;
+	char* r = (char*)&a;
 	memset(tmp, 0xFF, 256);
-	while (cLen < srclen) {
-		while (cLen < srclen && getPrefixCodeLen(tmp) < 8) {
-			prefixCodeCat(tmp, (unsigned char*)prefixCode[(unsigned char)srcarr[cLen]]);
+	originalFile.clear();
+	originalFile.seekg(0, ios::beg);
+	zippedFile.clear();
+	zippedFile.seekp(zipFileHeadTag.cDataPosi, ios::beg);
+	while (cLen < oFileSize) {
+		while (cLen < oFileSize && getPrefixCodeLen(tmp) < 8) {
+			originalFile.read(q, 1);
+			prefixCodeCat(tmp, (unsigned char*)prefixCode[b]);
 			cLen++;
 		}
 		
@@ -190,7 +218,8 @@ int HuffmanEncoder::writeByteStream() {
 				a += p[i] * scale;
 				scale *= 2;
 			}
-			buf[eLen] = a;
+			zippedFile.write(r, 1);
+			//buf[eLen] = a;
 			eLen++;
 			pLen -= 8;
 			p += 8;
@@ -201,6 +230,8 @@ int HuffmanEncoder::writeByteStream() {
 	//while (pLen > 0) {
 
 	//}
+	/*压缩后的数据大小*/
+	cDataSize = eLen;
 	return 0;
 }
 
@@ -211,6 +242,10 @@ BinTree* HuffmanEncoder::copyNode(BinTree* node) {
 	return p;
 }
 int HuffmanEncoder::encode() {
+	if (status != 0) {
+		cout << "编码器出错,即将退出...\n";
+		return -1;
+	}
 	generateFreqList();
 	if (generateHFMTree() != 0) {
 		cout << __FUNCTION__;
@@ -219,27 +254,33 @@ int HuffmanEncoder::encode() {
 		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree) << endl;
 		setBinTreeDepth(hfmTree, 1);
 		BinTreeTable* table = convertTreeToTable(hfmTree);
-		//cout << getBinTreeNodeNum(table, 0) << endl << getBinTreeLeavesNum(table, 0) << endl << getBinTreeDepth(hfmTree) << endl;
 		BinTree* temp = convertTableToTree(table);
-		//cout << "+++" << getBinTreeNodeNum(temp) << endl << getBinTreeLeavesNum(temp) << endl << getBinTreeDepth(table) << endl;
 		cout << compareTree(hfmTree, temp);
+		__int16 itemNum = getBinTreeNodeNum(table, 0);
+
+		{
+			zipFileHeadTag.cDictItemNumb = itemNum;
+			zipFileHeadTag.cDictSize = itemNum * zipFileHeadTag.cDictItemSize;
+			zipFileHeadTag.cDataPosi = sizeof(ZIPFileInfo) + zipFileHeadTag.cDictSize;
+		}
+
+		{
+			zippedFile.clear();
+			zippedFile.seekp(0, ios::beg);
+			zippedFile.write((char*)&zipFileHeadTag, sizeof(ZIPFileInfo));
+			zippedFile.write((char*)table, zipFileHeadTag.cDictSize);
+		}
+		
 		generatePrefixCodeTable();
 		writeByteStream();
-		/*应以二进制打开文件,否则写入0x0A(换行符'\n')时Windows会很智能的写入为0x0D 0x0A('\r\n')*/
+		zipFileHeadTag.cDataSize = cDataSize;
+		zippedFile.seekp(0, ios::end);
+		unsigned __int32 cFileSize = zippedFile.tellp();
+		zippedFile.seekp(((char*)&zipFileHeadTag.cFileSize - (char*)&zipFileHeadTag), ios::beg);
+		zippedFile.write((char*)&cFileSize, sizeof(cDataSize));
+		zippedFile.write((char*)&cDataSize, sizeof(cDataSize));
+		zippedFile.close();
 		cin.get();
-		FILE* fp = fopen("D:\\$111.dat", "wb+");
-		FILE* fp2 = fopen("D:\\aaaaa.txt", "r+");
-		char aaa[222];
-		fread(aaa, 1, 1, fp2);
-		if (fp == NULL) {
-			cout << "OPEN FAILED!\n";
-		}
-		else {
-			cout << "OPEN SUCCEEDED!\n";
-			fwrite(table, sizeof(BinTreeTable), getBinTreeNodeNum(table, 0), fp);
-			fflush(fp);
-			fclose(fp);
-		}
 	}
 
 	return 0;

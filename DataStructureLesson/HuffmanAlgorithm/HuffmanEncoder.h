@@ -11,15 +11,13 @@ private:
 	ifstream originalFile;
 	ofstream zippedFile;
 	ZIPFileInfo zipFileHeadTag;
-	string src;
 	BinTree* hfmTree;
-	unsigned char* buf;
-	ostringstream out;
-	char* srcarr;
-	unsigned __int32 srclen;
 	BinTree* freqList[256];
+	unsigned __int32 oFileSize;
+	unsigned __int32 cDataSize;
+	int status;
 	char* prefixCode[256];
-
+	void init();
 	int openFile();
 	void generateFreqList();
 	int getMinFreqElemSeq();
@@ -32,9 +30,6 @@ private:
 
 public:
 	void build(char*, char*);
-	void build(char*);
 	HuffmanEncoder();
-	void init(string& s);
-	void init(char*,char*);
 	int encode();
 };

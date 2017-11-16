@@ -8,7 +8,7 @@ typedef struct BinTreeDynamicStruct {
 	__int16 depth;
 	BinTreeDataType data;
 }BinTree;
-//#pragma pack(2)
+#pragma pack(2)
 typedef struct BinTreeStaticStruct {
 	__int16 par;
 	__int16 left;
@@ -20,4 +20,4 @@ typedef struct BinTreeStaticStruct {
 	char reserve2;
 	char reserve3;
 }BinTreeTable;
-//#pragma pack()
+#pragma pack()
