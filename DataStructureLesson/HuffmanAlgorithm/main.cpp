@@ -3,7 +3,7 @@
 
 int main() {
 	HuffmanEncoder mEncoder;
-	mEncoder.build("D:\\111.txt","D:\\111-zipped.txt");
+	mEncoder.build("D:\\000.txt","D:\\000-zipped.txt");
 	mEncoder.encode();
 	cin.get();
 	return 0;

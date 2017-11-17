@@ -23,6 +23,7 @@ void HuffmanEncoder::generateFreqList() {
 	originalFile.clear();
 	originalFile.seekg(0, ios::beg);
 	for (i = 0; i < oFileSize; i++) {
+		/*I/O操作,此处有很大的优化空间*/
 		originalFile.read((char*)&c, 1);
 		freqList[c]->weight++;
 	}
@@ -60,11 +61,7 @@ void HuffmanEncoder::build(char* c1, char* c2) {
 }
 
 void HuffmanEncoder::init() {
-	//src = s;
-	//srcarr = (char*)s.c_str();
-	//srclen = s.length();
-	//buf = buff;
-	//memset(buf, 0, 102400);
+
 	status = 0;
 	memset(freqList, 0, 256 * sizeof(BinTree*));
 	memset(prefixCode, 0, 256);
@@ -81,8 +78,6 @@ void HuffmanEncoder::init() {
 		status = -1;
 		return;
 	}
-	/*先向文件写入大小为sizeof(ZIPFileInfo)内容为0的内存,预留空间*/
-	//zippedFile.write((char*)&zipFileHeadTag, sizeof(ZIPFileInfo));
 
 	{
 		/*文件标签,即"WT"这两个字符*/
@@ -153,6 +148,9 @@ void HuffmanEncoder::writePrefixCodeTable(BinTree* node, BinTree* par, char* tem
 }
 
 int HuffmanEncoder::generatePrefixCodeTable() {
+	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0) {
+		
+	}
 	char temp[256];
 	memset(temp, 0xFF, 256);
 	writePrefixCodeTable(hfmTree, NULL, temp);
@@ -191,9 +189,8 @@ int HuffmanEncoder::writeByteStream() {
 	unsigned char tmp[256];
 	__int32 tmplen;
 	__int32 pLen;
-	//__int32 scale;
 	int i, j;
-	unsigned char a, b;
+	unsigned char a = 0, b = 0;
 	unsigned char* p = tmp;
 	char* q = (char*)&b;
 	char* r = (char*)&a;
@@ -202,6 +199,8 @@ int HuffmanEncoder::writeByteStream() {
 	originalFile.seekg(0, ios::beg);
 	zippedFile.clear();
 	zippedFile.seekp(zipFileHeadTag.cDataPosi, ios::beg);
+	/*对于只有一种字符的文件,直接跳转到写文件末尾的语句*/
+	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0) goto label;
 	while (cLen < oFileSize) {
 		while (cLen < oFileSize && getPrefixCodeLen(tmp) < 8) {
 			/*I/O费时比较严重,这里有优化的空间*/
@@ -215,14 +214,12 @@ int HuffmanEncoder::writeByteStream() {
 		pLen = tmplen;
 		while (pLen > 7) {
 			a = 0;
-			//scale = 1;
 			for (i = 7,j = 0; i > -1; i--,j++) {
+				/*使用位运算,每8bit转化为一个char*/
 				a += (p[i] << j);
-				//scale << 2;
 			}
 			/*I/O费时比较严重,这里有优化的空间*/
 			zippedFile.write(r, 1);
-			//buf[eLen] = a;
 			eLen++;
 			pLen -= 8;
 			p += 8;
@@ -235,7 +232,6 @@ int HuffmanEncoder::writeByteStream() {
 		a = 0;
 		b = pLen;
 		p = tmp;
-		//scale = 1;
 		while (pLen > 0) {
 			pLen--;
 			a += (p[pLen] << (7 - pLen));
@@ -243,6 +239,7 @@ int HuffmanEncoder::writeByteStream() {
 		zippedFile.write(r, 1);
 		eLen++;
 	}
+	label:
 	/*写入文件最后一个字节,该字节表示编码好的二进制流不足8bit的剩余部分bit大小,范围0~7*/
 	zippedFile.write(q, 1);
 	/*压缩后的数据大小*/
