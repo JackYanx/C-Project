@@ -191,7 +191,8 @@ int HuffmanEncoder::writeByteStream() {
 	unsigned char tmp[256];
 	__int32 tmplen;
 	__int32 pLen;
-	__int32 scale;
+	//__int32 scale;
+	int i, j;
 	unsigned char a, b;
 	unsigned char* p = tmp;
 	char* q = (char*)&b;
@@ -203,6 +204,7 @@ int HuffmanEncoder::writeByteStream() {
 	zippedFile.seekp(zipFileHeadTag.cDataPosi, ios::beg);
 	while (cLen < oFileSize) {
 		while (cLen < oFileSize && getPrefixCodeLen(tmp) < 8) {
+			/*I/O费时比较严重,这里有优化的空间*/
 			originalFile.read(q, 1);
 			prefixCodeCat(tmp, (unsigned char*)prefixCode[b]);
 			cLen++;
@@ -213,11 +215,12 @@ int HuffmanEncoder::writeByteStream() {
 		pLen = tmplen;
 		while (pLen > 7) {
 			a = 0;
-			scale = 1;
-			for (int i = 7; i > -1; i--) {
-				a += p[i] * scale;
-				scale *= 2;
+			//scale = 1;
+			for (i = 7,j = 0; i > -1; i--,j++) {
+				a += (p[i] << j);
+				//scale << 2;
 			}
+			/*I/O费时比较严重,这里有优化的空间*/
 			zippedFile.write(r, 1);
 			//buf[eLen] = a;
 			eLen++;
@@ -226,10 +229,22 @@ int HuffmanEncoder::writeByteStream() {
 		}
 		trimPrefixCode(tmp, tmplen, pLen);
 	}
+	b = 0;
 	/*处理最后几个bit,不足8bit的剩余部分置为0*/
-	//while (pLen > 0) {
-
-	//}
+	if (pLen != 0) {
+		a = 0;
+		b = pLen;
+		p = tmp;
+		//scale = 1;
+		while (pLen > 0) {
+			pLen--;
+			a += (p[pLen] << (7 - pLen));
+		}
+		zippedFile.write(r, 1);
+		eLen++;
+	}
+	/*写入文件最后一个字节,该字节表示编码好的二进制流不足8bit的剩余部分bit大小,范围0~7*/
+	zippedFile.write(q, 1);
 	/*压缩后的数据大小*/
 	cDataSize = eLen;
 	return 0;
