@@ -16,6 +16,7 @@ private:
 	unsigned __int32 zFileSize;
 	unsigned __int32 oDataSize;
 	int status;
+	unsigned char eofTag;
 
 	void errMsgDisplay(char*);
 	void init();
@@ -23,6 +24,12 @@ private:
 	int checkZippedFileValidity();
 	int checkBinTreeTableValidity();
 
+
+	int getPrefixCodeLen(unsigned char*);
+	unsigned char* prefixCodeCat(unsigned char*, unsigned char*);
+	unsigned char* trimPrefixCode(unsigned char*, __int32, __int32);
+	void getCharFromHfmTree(BinTree*, unsigned char*, unsigned char*, int&);
+	int readByteStream();
 public:
 	void build(char*, char*);
 	HuffmanDecoder();

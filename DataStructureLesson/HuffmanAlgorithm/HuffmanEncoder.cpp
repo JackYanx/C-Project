@@ -1,14 +1,18 @@
 #include "HuffmanEncoder.h"
 
+void HuffmanEncoder::errMsgDisplay(char* errorMessage) {
+	cout << errorMessage;
+}
+
 int HuffmanEncoder::openFile() {
 	originalFile.open(originalFilePath, ios::in | ios::binary);
 	if (!originalFile.is_open()) {
-		cout << "原文件打开失败!\n";
+		errMsgDisplay("原文件打开失败!\n");
 		return -1;
 	}
 	zippedFile.open(zippedFilePath, ios::out | ios::binary | ios::trunc);
 	if (!zippedFile.is_open()) {
-		cout << "创建并写入文件失败!\n";
+		errMsgDisplay("创建并写入文件失败!\n");
 		return -1;
 	}
 	originalFile.seekg(0, originalFile.end);
@@ -98,7 +102,10 @@ int HuffmanEncoder::generateHFMTree() {
 	while (true) {
 		min1 = getMinFreqElemSeq();
 		/*列表中应该至少有一个权重非0的元素,如果没有,说明出错*/
-		if (min1 == -1) return -1;
+		if (min1 == -1) {
+			errMsgDisplay("生成树出现错误!\n");
+			return -1;
+		}
 		node1 = copyNode(freqList[min1]);
 		freqList[min1]->weight = 0;
 
@@ -135,7 +142,7 @@ void HuffmanEncoder::writePrefixCodeTable(BinTree* node, BinTree* par, char* tem
 			temp[seq] = 1;
 		}
 		else {
-			cout << "ERROR!\n";
+			errMsgDisplay("ERROR!\n");
 			return;
 		}
 	}
@@ -149,7 +156,7 @@ void HuffmanEncoder::writePrefixCodeTable(BinTree* node, BinTree* par, char* tem
 
 int HuffmanEncoder::generatePrefixCodeTable() {
 	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0) {
-		
+		return 0;
 	}
 	char temp[256];
 	memset(temp, 0xFF, 256);
@@ -157,7 +164,7 @@ int HuffmanEncoder::generatePrefixCodeTable() {
 	return 0;
 }
 
-int getPrefixCodeLen(unsigned char* p) {
+int HuffmanEncoder::getPrefixCodeLen(unsigned char* p) {
 	for (int i = 0; i < 256; i++) {
 		if (p[i] == 0xFF) {
 			return i;
@@ -166,14 +173,14 @@ int getPrefixCodeLen(unsigned char* p) {
 	return -1;
 }
 
-unsigned char* prefixCodeCat(unsigned char* des, unsigned char* src) {
+unsigned char* HuffmanEncoder::prefixCodeCat(unsigned char* des, unsigned char* src) {
 	__int32 deslen = getPrefixCodeLen(des);
 	__int32 srclen = getPrefixCodeLen(src);
 	memcpy((des + deslen), src, srclen);
 	return des;
 }
 
-unsigned char* trimPrefixCode(unsigned char* des, __int32 desLen, __int32 remain) {
+unsigned char* HuffmanEncoder::trimPrefixCode(unsigned char* des, __int32 desLen, __int32 remain) {
 	if (remain == 0) {
 		memset(des, 0xFF, 256);
 		return des;
@@ -200,7 +207,8 @@ int HuffmanEncoder::writeByteStream() {
 	zippedFile.clear();
 	zippedFile.seekp(zipFileHeadTag.cDataPosi, ios::beg);
 	/*对于只有一种字符的文件,直接跳转到写文件末尾的语句*/
-	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0) goto label;
+	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0)
+		goto label;
 	while (cLen < oFileSize) {
 		while (cLen < oFileSize && getPrefixCodeLen(tmp) < 8) {
 			/*I/O费时比较严重,这里有优化的空间*/
@@ -255,12 +263,12 @@ BinTree* HuffmanEncoder::copyNode(BinTree* node) {
 }
 int HuffmanEncoder::encode() {
 	if (status != 0) {
-		cout << "编码器出错,即将退出...\n";
+		errMsgDisplay("编码器出错,即将退出...\n");
 		return -1;
 	}
 	generateFreqList();
 	if (generateHFMTree() != 0) {
-		cout << __FUNCTION__;
+		errMsgDisplay(__FUNCTION__);
 	}
 	else {
 		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree) << endl;
