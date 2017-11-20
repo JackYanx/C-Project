@@ -69,6 +69,7 @@ void writeTree(BinTree* tree, BinTreeTable* table, __int16 seq, BinTree* par) {
 	tree->depth = table[seq].depth;
 	tree->weight = table[seq].weight;
 	tree->par = par;
+	//if()
 	if (table[seq].left != -1) {
 		tree->left = getNewNode();
 		writeTree(tree->left, table, table[seq].left, tree);
@@ -178,7 +179,6 @@ __int16 compareTree(BinTreeTable* table1, BinTreeTable* table2) {
 	}
 	return 1;
 }
-
 
 /*递归遍历并销毁动态二叉树*/
 __int16 destoryBinTree(BinTree* tree) {

@@ -40,8 +40,9 @@ void HuffmanDecoder::init() {
 		return;
 	}
 
-	hfmTreeTable = new BinTreeTable[zipFileHeadTag.cDictItemNumb];
-
+	hfmTreeTable = (BinTreeTable*)malloc(zipFileHeadTag.cDictSize);
+	//hfmTreeTable = new BinTreeTable[zipFileHeadTag.cDictItemNumb];
+	memset(hfmTreeTable, 0, zipFileHeadTag.cDictSize);
 	if (checkBinTreeTableValidity() != 0) {
 		errMsgDisplay("哈夫曼表有误,请重新选择文件!\n");
 		status = -1;
@@ -185,23 +186,27 @@ unsigned char* HuffmanDecoder::trimPrefixCode(unsigned char* des, __int32 desLen
 	return des;
 }
 
-void HuffmanDecoder::getCharFromHfmTree(BinTree* tree, unsigned char* q, unsigned char* tmp, int& pLen) {
+void HuffmanDecoder::getCharFromHfmTree(BinTree* tree, unsigned char* q, unsigned char* tmp, int& pLen, int cs) {
 	if (tree == NULL) return;
+	if ((tree->left == NULL && tree->right != NULL) || (tree->left != NULL && tree->right == NULL)) {
+		errMsgDisplay(__FUNCTION__"ExceptionNode!\n");
+	}
 	if (tree->left == NULL && tree->right == NULL) {
 		*q = tree->data;
 		return;
 	}
 	if (tmp[pLen] == 0) {
 		pLen++;
-		getCharFromHfmTree(tree->left, q, tmp, pLen);
+		getCharFromHfmTree(tree->left, q, tmp, pLen,cs);
 		return;
 	}
 	if (tmp[pLen] == 1) {
 		pLen++;
-		getCharFromHfmTree(tree->right, q, tmp, pLen);
+		getCharFromHfmTree(tree->right, q, tmp, pLen,cs);
 		return;
 	}
 	errMsgDisplay(__FUNCTION__"\n");
+	pLen = cs;
 	return;
 }
 
@@ -214,9 +219,10 @@ int HuffmanDecoder::readByteStream() {
 	int i, j;
 	__int32 tmplen = 0;
 	__int32 pLen = 0;
+	__int32 tempp;
 	unsigned __int32 cLen = 0;
 	unsigned __int32 eLen = 0;
-	unsigned __int32 zLen = zipFileHeadTag.cDataSize;//(eofTag == 0 ? zipFileHeadTag.cDataSize : zipFileHeadTag.cDataSize - 1);
+	unsigned __int32 zLen = zipFileHeadTag.cDataSize;
 	unsigned char tmp[256];
 	memset(tmp, 0xFF, 256);
 	zippedFile.clear();
@@ -235,28 +241,27 @@ int HuffmanDecoder::readByteStream() {
 			cLen++;
 		}
 		pLen = 0;
+		tempp = 0;
 		while (pLen < tmplen - 8) {
-			getCharFromHfmTree(hfmTree, (unsigned char*)q, tmp, pLen);
+			getCharFromHfmTree(hfmTree, (unsigned char*)q, tmp, pLen,pLen);
+			if (tempp == pLen) break;
+			tempp = pLen;
 			originalFile.write(q, 1);
 			eLen++;
 		}
 		trimPrefixCode(tmp, tmplen, tmplen - pLen);
 	}
-	/*处理最后1个字节*/
-	zippedFile.read(p, 1);
+	/*处理压缩数据的最后1个字节*/
 	tmplen = getPrefixCodeLen(tmp);
-	for (i = 0, j = 7; i < 8; i++, j--) {
-		tmp[tmplen + j] = (a >> i) % 2;
-	}
-	tmplen += 8;
-	cLen++;
 	pLen = 0;
-	while (pLen < tmplen - 5 - eofTag) {
-		getCharFromHfmTree(hfmTree, (unsigned char*)q, tmp, pLen);
+	tempp = 0;
+	while (pLen < tmplen - 9 + eofTag) {
+		getCharFromHfmTree(hfmTree, (unsigned char*)q, tmp, pLen,pLen);
+		if (tempp == pLen) break;
+		tempp = pLen;
 		originalFile.write(q, 1);
 		eLen++;
 	}
-	
 	cout << eLen;
 	return 0;
 
@@ -271,5 +276,7 @@ int HuffmanDecoder::decode() {
 	readByteStream();
 	originalFile.close();
 	zippedFile.close();
-	
+	if (status == 0)
+		cout << "解码成功,解压出的文件路径为:" << originalFilePath << endl << "按回车键继续\n";
+	cin.get();
 }

@@ -28,7 +28,7 @@ private:
 	int getPrefixCodeLen(unsigned char*);
 	unsigned char* prefixCodeCat(unsigned char*, unsigned char*);
 	unsigned char* trimPrefixCode(unsigned char*, __int32, __int32);
-	void getCharFromHfmTree(BinTree*, unsigned char*, unsigned char*, int&);
+	void getCharFromHfmTree(BinTree*, unsigned char*, unsigned char*, int&, int);
 	int readByteStream();
 public:
 	void build(char*, char*);

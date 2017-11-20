@@ -191,49 +191,77 @@ unsigned char* HuffmanEncoder::trimPrefixCode(unsigned char* des, __int32 desLen
 }
 
 int HuffmanEncoder::writeByteStream() {
+	/*当前已转换的原文件字节数*/
 	unsigned __int32 cLen = 0;
+	/*当前已输出到压缩文件中的编码完成数据字节数*/
 	unsigned __int32 eLen = 0;
+	/*同来存放临时二进制流为数组*/
 	unsigned char tmp[256];
+	/*临时数组中有效编码长度,无效编码为0xFF,有效编码为0或者1*/
 	__int32 tmplen;
+	/*从临时数组中已转换的二进制流bit数*/
 	__int32 pLen;
+	/*用来参与循环的辅助变量*/
 	int i, j;
+	/*用来存放读入的字符以及要写入的字符*/
 	unsigned char a = 0, b = 0;
+	/*用来在临时数组中移动的指针*/
 	unsigned char* p = tmp;
+	/*两个字符指针*/
 	char* q = (char*)&b;
 	char* r = (char*)&a;
+	/*初始化临时数组内存区域为0xFF*/
 	memset(tmp, 0xFF, 256);
+	/*清除原文件异常状态,恢复正常状态*/
 	originalFile.clear();
+	/*定位文件指针到文件开头*/
 	originalFile.seekg(0, ios::beg);
+	/*清除输出压缩文件文件异常状态,恢复正常状态*/
 	zippedFile.clear();
+	/*定位文件指针到距离文件开头偏移量为数据偏移位置*/
 	zippedFile.seekp(zipFileHeadTag.cDataPosi, ios::beg);
 	/*对于只有一种字符的文件,直接跳转到写文件末尾的语句*/
 	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0)
 		goto label;
+	/*所读取的原文件字节数小于原文件大小时循环*/
 	while (cLen < oFileSize) {
+		/*所读取的原文件字节数小于原文件大小且临时数组有效长度小于8时循环*/
 		while (cLen < oFileSize && getPrefixCodeLen(tmp) < 8) {
-			/*I/O费时比较严重,这里有优化的空间*/
+			/*读入一个字节到变量q指针所指变量a中,I/O费时比较严重,这里有优化的空间*/
 			originalFile.read(q, 1);
+			/*将字符a对应的前缀码拼接到临时数组中*/
 			prefixCodeCat(tmp, (unsigned char*)prefixCode[b]);
+			/*已读入原文件字节数加一*/
 			cLen++;
 		}
-		
+		/*获取临时数组有效长度*/
 		tmplen = getPrefixCodeLen(tmp);
+		/*辅助指针p指向临时数组头部*/
 		p = tmp;
+		/*辅助变量p赋值为临时数组长度*/
 		pLen = tmplen;
+		/*临时数组中未处理的前缀码数量大于7时循环*/
 		while (pLen > 7) {
+			/*初始化a为0*/
 			a = 0;
+			/*截取临时数组中前8位二进制数,转化为一个字节,这里使用位运算提高效率*/
 			for (i = 7,j = 0; i > -1; i--,j++) {
 				/*使用位运算,每8bit转化为一个char*/
 				a += (p[i] << j);
 			}
-			/*I/O费时比较严重,这里有优化的空间*/
+			/*将转化出的这个字节写入压缩文件中,I/O费时比较严重,这里有优化的空间*/
 			zippedFile.write(r, 1);
+			/*已编码数据长度加一*/
 			eLen++;
+			/*临时数组中未处理的二进制数长度减8*/
 			pLen -= 8;
+			/*指针p向后移动8个字节*/
 			p += 8;
 		}
+		/*整理临时数组,使得剩余未转化的二进制数转移到头部*/
 		trimPrefixCode(tmp, tmplen, pLen);
 	}
+	/*变量b赋值为0*/
 	b = 0;
 	/*处理最后几个bit,不足8bit的剩余部分置为0*/
 	if (pLen != 0) {
@@ -271,11 +299,11 @@ int HuffmanEncoder::encode() {
 		errMsgDisplay(__FUNCTION__);
 	}
 	else {
-		cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree) << endl;
+		//cout << "success" << endl << getBinTreeNodeNum(hfmTree) << endl << getBinTreeLeavesNum(hfmTree) << endl;
 		setBinTreeDepth(hfmTree, 1);
 		BinTreeTable* table = convertTreeToTable(hfmTree);
 		BinTree* temp = convertTableToTree(table);
-		cout << compareTree(hfmTree, temp);
+		//cout << compareTree(hfmTree, temp);
 		__int16 itemNum = getBinTreeNodeNum(table, 0);
 
 		{
@@ -300,6 +328,8 @@ int HuffmanEncoder::encode() {
 		zippedFile.write((char*)&cFileSize, sizeof(cDataSize));
 		zippedFile.write((char*)&cDataSize, sizeof(cDataSize));
 		zippedFile.close();
+		if(status == 0)
+			cout << "编码成功,压缩文件路径为:" << zippedFilePath << endl << "按回车键继续\n";
 		cin.get();
 	}
 

@@ -4,16 +4,17 @@
 
 int main() {
 	
+	string s = "D:\\0.txt";
+
+	string s1 = s + "-zipped";
+	string s2 = s1 + "-unzipped";
 	HuffmanEncoder mEncoder;
-	mEncoder.build("D:\\0.txt","D:\\0-zipped.txt");
+	mEncoder.build((char*)s.c_str(), (char*)s1.c_str());
 	mEncoder.encode();
 	
 	HuffmanDecoder mDecoder;
-	mDecoder.build("D:\\0-zipped.txt", "D:\\0-zipped-unzipped.txt");
+	mDecoder.build((char*)s1.c_str(), (char*)s2.c_str());
 	mDecoder.decode();
 
-
-
-	cin.get();
 	return 0;
 }
