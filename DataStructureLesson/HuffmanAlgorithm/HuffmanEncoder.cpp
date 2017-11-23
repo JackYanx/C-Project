@@ -280,6 +280,8 @@ int HuffmanEncoder::writeByteStream() {
 	zippedFile.write(q, 1);
 	/*压缩后的数据大小*/
 	cDataSize = eLen;
+
+
 	return 0;
 }
 
@@ -327,7 +329,20 @@ int HuffmanEncoder::encode() {
 		zippedFile.seekp(((char*)&zipFileHeadTag.cFileSize - (char*)&zipFileHeadTag), ios::beg);
 		zippedFile.write((char*)&cFileSize, sizeof(cDataSize));
 		zippedFile.write((char*)&cDataSize, sizeof(cDataSize));
+
+
+		{
+			char a;
+			originalFile.clear();
+			originalFile.seekg(-1, ios::end);
+			originalFile.read(&a, 1);
+			zippedFile.clear();
+			zippedFile.seekp(sizeof(ZIPFileInfo) + sizeof(BinTreeTable) - 1, ios::beg);
+			zippedFile.write(&a, 1);
+		}
+
 		zippedFile.close();
+		originalFile.close();
 		if(status == 0)
 			cout << "编码成功,压缩文件路径为:" << zippedFilePath << endl << "按回车键继续\n";
 		cin.get();

@@ -205,7 +205,7 @@ void HuffmanDecoder::getCharFromHfmTree(BinTree* tree, unsigned char* q, unsigne
 		getCharFromHfmTree(tree->right, q, tmp, pLen,cs);
 		return;
 	}
-	errMsgDisplay(__FUNCTION__"\n");
+	//errMsgDisplay(__FUNCTION__"\n");
 	pLen = cs;
 	return;
 }
@@ -262,7 +262,13 @@ int HuffmanDecoder::readByteStream() {
 		originalFile.write(q, 1);
 		eLen++;
 	}
-	cout << eLen;
+
+	if (eLen + 1 == zipFileHeadTag.oFileSize) {
+		originalFile.write(&hfmTreeTable->reserve3, 1);
+		eLen++;
+	}
+	cout << "解压得到原文件大小为:" << eLen << "字节" << endl;
+
 	return 0;
 
 }
@@ -273,7 +279,19 @@ int HuffmanDecoder::decode() {
 		return -1;
 	}
 	hfmTree = convertTableToTree(hfmTreeTable);
-	readByteStream();
+	if (hfmTree->left == NULL && hfmTree->right == NULL && hfmTree->weight != 0) {
+		originalFile.clear();
+		originalFile.seekp(0, ios::beg);
+		char* a = (char*)&hfmTree->data;
+		unsigned __int32 len = hfmTree->weight;
+		unsigned __int32 i;
+		for (i = 0; i < len; i++) {
+			originalFile.write(a, 1);
+		}
+	}
+	else {
+		readByteStream();
+	}
 	originalFile.close();
 	zippedFile.close();
 	if (status == 0)

@@ -4,10 +4,11 @@
 
 int main() {
 	
-	string s = "D:\\0.txt";
+	string s = "C:\\Users\\Asus\\Desktop\\5.bmp";
 
 	string s1 = s + "-zipped";
 	string s2 = s1 + "-unzipped";
+
 	HuffmanEncoder mEncoder;
 	mEncoder.build((char*)s.c_str(), (char*)s1.c_str());
 	mEncoder.encode();
