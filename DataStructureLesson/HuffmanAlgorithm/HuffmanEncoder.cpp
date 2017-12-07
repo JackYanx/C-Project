@@ -21,6 +21,8 @@ int HuffmanEncoder::openFile() {
 	return 0;
 }
 
+// '\n'
+
 void HuffmanEncoder::generateFreqList() {
 	unsigned __int32 i;
 	unsigned char c;
@@ -97,35 +99,53 @@ void HuffmanEncoder::init() {
 	}
 }
 int HuffmanEncoder::generateHFMTree() {
+	/*用于记录频率表中最小的权值以及次小的权值的顺序*/
 	int min1, min2;
+	/*BinTree指针,存放交换过程中的相关结点地址*/
 	BinTree* node1, *node2, *temp, *newNode;
 	while (true) {
+		/*获取表中权重即频率最小的字符的顺序即ASCII码*/
 		min1 = getMinFreqElemSeq();
 		/*列表中应该至少有一个权重非0的元素,如果没有,说明出错*/
 		if (min1 == -1) {
 			errMsgDisplay("生成树出现错误!\n");
+			/*生成失败*/
 			return -1;
 		}
+		/*复制为一个全新的结点*/
 		node1 = copyNode(freqList[min1]);
+		/*同时将被复制过的结点状态置为已处理*/
 		freqList[min1]->weight = 0;
-
+		/*获取新表中权重即频率最小的字符的顺序即ASCII码*/
 		min2 = getMinFreqElemSeq();
 		/*当min2为-1时,树生成完成*/
 		if (min2 == -1) {
+			/*当前对象实例的hfmTree赋值为表中最后一个权值非0元素*/
 			hfmTree = node1;
+			/*生成成功*/
 			return 0;
 		}
+		/*将新表中权值最小的结点赋值给临时指针变量*/
 		temp = freqList[min2];
+		/*为node2分配新的内存空间*/
 		node2 = copyNode(temp);
+		/*将原表中被复制过的结点置为无效状态*/
 		freqList[min2]->weight = 0;
-
+		/*为newNode分配新的内存空间,newNode用来存储两个子节点合并成新结点的地址*/
 		newNode = getNewNode();
+		/*原表中权重最小的结点的双亲结点赋值为newNode*/
 		node1->par = newNode;
+		/*原表中权重次小的结点的双亲结点赋值为newNode*/
 		node2->par = newNode;
+		/*newNode左子树赋值为原表中权重最小的结点*/
 		newNode->left = node1;
+		/*newNode右子树赋值为原表中权重次小的结点*/
 		newNode->right = node2;
+		/*更改新结点权重为两个最小结点的权重之和*/
 		newNode->weight = node1->weight + node2->weight;
+		/*删除临时结点,回收内存空间*/
 		delete temp;
+		/*将新结点至于被删除的次小结点原位置上*/
 		freqList[min2] = newNode;
 	}
 	return -2;
@@ -324,6 +344,7 @@ int HuffmanEncoder::encode() {
 		generatePrefixCodeTable();
 		writeByteStream();
 		zipFileHeadTag.cDataSize = cDataSize;
+		zippedFile.clear();
 		zippedFile.seekp(0, ios::end);
 		unsigned __int32 cFileSize = zippedFile.tellp();
 		zippedFile.seekp(((char*)&zipFileHeadTag.cFileSize - (char*)&zipFileHeadTag), ios::beg);
@@ -344,7 +365,7 @@ int HuffmanEncoder::encode() {
 		zippedFile.close();
 		originalFile.close();
 		if(status == 0)
-			cout << "编码成功,压缩文件路径为:" << zippedFilePath << endl << "按回车键继续\n";
+			cout << "编码成功,压缩文件路径为:" << zippedFilePath << endl << "压缩率为: " << 100.0 * cFileSize / zipFileHeadTag.oFileSize << '%' << endl << "按回车键继续\n";
 		cin.get();
 	}
 

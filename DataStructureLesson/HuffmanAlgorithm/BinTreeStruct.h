@@ -8,6 +8,7 @@ typedef struct BinTreeDynamicStruct {
 	__int16 depth;
 	BinTreeDataType data;
 }BinTree;
+
 #pragma pack(2)
 typedef struct BinTreeStaticStruct {
 	/*本节点双亲位置,带符号16位整数,为-1时表示根结点*/
