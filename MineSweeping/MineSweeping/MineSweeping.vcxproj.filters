@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\UI">
+      <UniqueIdentifier>{0a74f397-e101-47b5-b71f-bbe4c1c66382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\MSGameCore">
+      <UniqueIdentifier>{3aa36330-d4e0-4593-b5be-d28740bd8c4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UI\Window">
+      <UniqueIdentifier>{32848dea-3f21-42cf-b003-6d801f03f1ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libXBitmap">
+      <UniqueIdentifier>{cb8b6af2-2288-45fc-8c1a-f38f04e2e96a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\libXBitmap\base">
+      <UniqueIdentifier>{4b335cae-8dca-4227-a9e9-5e667e732e67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UI\FontsUtil">
+      <UniqueIdentifier>{1c21eac1-5904-45df-8025-3eb938caca04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameMessageQueue">
+      <UniqueIdentifier>{6218f5fb-14ff-43bd-b773-c88d998db3ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UI\BitmapUtil">
+      <UniqueIdentifier>{0bdfea8e-cd09-4df4-ac0a-c7846a7f7ed8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Controller">
+      <UniqueIdentifier>{2890a1a9-196c-4880-b162-800d71dbf9cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{a1dc96af-f4e0-4dd0-b3a1-f2840d793ecd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="WinMain2.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Window\Window_Start.cpp">
+      <Filter>src\UI\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Window\Window_GameMain.cpp">
+      <Filter>src\UI\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Window\Window_GameOption.cpp">
+      <Filter>src\UI\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="libXBitmap\base\FileUtil.cpp">
+      <Filter>src\libXBitmap\base</Filter>
+    </ClCompile>
+    <ClCompile Include="libXBitmap\XBitmap.cpp">
+      <Filter>src\libXBitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="libXBitmap\XBitmapReader.cpp">
+      <Filter>src\libXBitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="libXBitmap\XBitmapSplitter.cpp">
+      <Filter>src\libXBitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\FontsUtil\XFonts.cpp">
+      <Filter>src\UI\FontsUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Window\wnd_base.cpp">
+      <Filter>src\UI\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MSGameCore\CoreLogic.cpp">
+      <Filter>src\MSGameCore</Filter>
+    </ClCompile>
+    <ClCompile Include="MSGameCore\GameMessageQueue\MSGQueue.cpp">
+      <Filter>src\GameMessageQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\BitmapUtil\BitmapHelper.cpp">
+      <Filter>src\UI\BitmapUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\GameController.cpp">
+      <Filter>src\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\DateUtil.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Log.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\ToolUtil.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MSGameCore\GirdBox.h">
+      <Filter>src\MSGameCore</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndSummary.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Window\Window_Start.h">
+      <Filter>src\UI\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Window\Window_GameMain.h">
+      <Filter>src\UI\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Window\Window_GameOption.h">
+      <Filter>src\UI\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="libXBitmap\base\FileUtil.h">
+      <Filter>src\libXBitmap\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libXBitmap\base\XBMTypes.h">
+      <Filter>src\libXBitmap\base</Filter>
+    </ClInclude>
+    <ClInclude Include="libXBitmap\XBitmap.h">
+      <Filter>src\libXBitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="libXBitmap\XBitmapReader.h">
+      <Filter>src\libXBitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="libXBitmap\XBitmapSplitter.h">
+      <Filter>src\libXBitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Window\wnd_base.h">
+      <Filter>src\UI\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\FontsUtil\XFonts.h">
+      <Filter>src\UI\FontsUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="MSGameCore\CoreLogic.h">
+      <Filter>src\MSGameCore</Filter>
+    </ClInclude>
+    <ClInclude Include="MSGameCore\GameMessageQueue\MSGQueue.h">
+      <Filter>src\GameMessageQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\BitmapUtil\BitmapHelper.h">
+      <Filter>src\UI\BitmapUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="Controller\GameController.h">
+      <Filter>src\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DateUtil.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Log.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ToolUtil.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MineSweeper.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap\msg-empty.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-flagabove.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-mine.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-mineexploded.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-nomine.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num2.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num3.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num4.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num5.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num6.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num7.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-num8.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-uncovered.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap\msg-unknown.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
