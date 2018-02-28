@@ -76,6 +76,7 @@ void BitmapHelper::ShowOnDevice(HDC hdc, int x, int y)
 		::DeleteDC(hdcMem);
 	}
 }
+
 /*
 功能：在指定窗口上显示位图
 参数：hwnd 窗口句柄, (x,y) 目的左上角坐标

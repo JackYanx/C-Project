@@ -1,20 +1,8 @@
 #include "Window_GameMain.h"
+#include "../../Controller/GameController.h"
+#include "../../Utils/Log.h"
 
-static BitmapHelper bitmap_empty(L"res\\bitmap\\msg-empty.bmp");
-static BitmapHelper bitmap_flagabove(L"res\\bitmap\\msg-flagabove.bmp");
-static BitmapHelper bitmap_mine(L"res\\bitmap\\msg-mine.bmp");
-static BitmapHelper bitmap_mineexploded(L"res\\bitmap\\msg-mineexploded.bmp");
-static BitmapHelper bitmap_nomine(L"res\\bitmap\\msg-nomine.bmp");
-static BitmapHelper bitmap_num1(L"res\\bitmap\\msg-num1.bmp");
-static BitmapHelper bitmap_num2(L"res\\bitmap\\msg-num2.bmp");
-static BitmapHelper bitmap_num3(L"res\\bitmap\\msg-num3.bmp");
-static BitmapHelper bitmap_num4(L"res\\bitmap\\msg-num4.bmp");
-static BitmapHelper bitmap_num5(L"res\\bitmap\\msg-num5.bmp");
-static BitmapHelper bitmap_num6(L"res\\bitmap\\msg-num6.bmp");
-static BitmapHelper bitmap_num7(L"res\\bitmap\\msg-num7.bmp");
-static BitmapHelper bitmap_num8(L"res\\bitmap\\msg-num8.bmp");
-static BitmapHelper bitmap_uncovered(L"res\\bitmap\\msg-uncovered.bmp");
-static BitmapHelper bitmap_unknown(L"res\\bitmap\\msg-unknown.bmp");
+char logbuffer[32];
 
 /*使用双缓冲技术,绘制过程过于复杂,防止因计算速度不足导致的窗口内容闪烁
  *基本原理: 创建一个持久化的DC,
@@ -23,12 +11,12 @@ static BitmapHelper bitmap_unknown(L"res\\bitmap\\msg-unknown.bmp");
  */
 
 /*后台绘制设备上下文*/
-HDC backgroundDC = NULL;
+//static HDC backgroundDC = NULL;
 /*作为backgroundDC的所选对象*/
-HBITMAP backgroundBitmap = NULL;
+//static HBITMAP backgroundBitmap = NULL;
 /*本窗口DC像素大小,需要根据游戏初始数据进行更改*/
-int cxClient, cyClient;
-
+static int cxClientPix, cyClientPix;
+static GameController localGameController;
 // 窗口处理消息过程(回调函数)
 LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -43,15 +31,34 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 		*/
 	case WM_CREATE:
 	{
-		cxClient = 0;
-		cyClient = 0;
+		/*从上一个窗口获取输入信息*/
+		GameInfo gi;
+		gi.boardLength = 40;
+		gi.boardHeight = 20;
+		gi.mineNum = 10;
+		gi.playerName = L"TestPlayer";
+		gi.gameModel = new MineSweepingGame(40, 20, 10);
+		/**/
+
+		cxClientPix = 0;
+		cyClientPix = 0;
 		hwnd[2] = phwnd;
-		set_window_size(phwnd, 900, 600);
+		/*初始化Canve*/
+		localGameController.initialize(&gi, phwnd, hInstance[2],&cxClientPix, &cyClientPix);
+
+		inflog("GameCanveSize: w:",itoa(cxClientPix, logbuffer, 10),"px | h:", itoa(cyClientPix, logbuffer, 10),"px.");
+		/*第一次绘制*/
+		localGameController.draw(phwnd);
+
+		//set_window_size(phwnd, 900, 600);
+		/*
 		HDC hdc = GetDC(phwnd);
-		backgroundDC = CreateCompatibleDC(hdc);
-		backgroundBitmap = CreateCompatibleBitmap(hdc, cxClient, cyClient);
+		HDC backgroundDC = CreateCompatibleDC(hdc);
+		HBITMAP backgroundBitmap = CreateCompatibleBitmap(hdc, cxClientPix, cyClientPix);
 		ReleaseDC(phwnd, hdc);
 		SelectObject(backgroundDC, backgroundBitmap);
+		*/
+
 		//onDraw2();
 		/*
 		break语句很重要!!!
@@ -71,7 +78,7 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 		/*
 		* 内容绘制
 		*/
-		bitmap_num5.ShowOnDevice(hdc,100,100);
+		//bitmap_num5.ShowOnDevice(hdc,100,100);
 
 
 		/*结束绘图,释放绘图区*/

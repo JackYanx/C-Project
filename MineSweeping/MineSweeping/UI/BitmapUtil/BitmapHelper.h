@@ -27,6 +27,7 @@ public:
 protected:
 	TCHAR fileName[256]; // 位图文件名  
 	HBITMAP hBitmap;      // 位图句柄  
+	HDC memHDC;
 	int desX;             // 目的x坐标  
 	int desY;             // 目的y坐标  
 protected:

@@ -195,6 +195,7 @@
     <ResourceCompile Include="MineSweeper.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bitmap1.bmp" />
     <Image Include="res\bitmap\msg-empty.bmp" />
     <Image Include="res\bitmap\msg-flagabove.bmp" />
     <Image Include="res\bitmap\msg-mine.bmp" />
