@@ -35,6 +35,7 @@ public:
 	BOOL WINAPI initialize(_GameInfo*, HWND, HINSTANCE, int*, int*);
 	/*Draw on Physical Device Context*/
 	BOOL WINAPI draw(HWND);
+	BOOL WINAPI draw(HDC,HDC,HDC,HBITMAP);
 	BOOL WINAPI actionProc(_ActionInfo*);
 	BOOL WINAPI actionProc(ActionType,void*,void*);
 	//HDC drawOnPDC();
@@ -55,6 +56,7 @@ private:
 	//HDC Pixel Size
 	int canveWidthPix;
 	int canveHeightPix;
+	int boardPosiX, boardPosiY;
 	HWND cHWND;
 	HINSTANCE cHINSTANCE;
 	TCHAR playerName[20];

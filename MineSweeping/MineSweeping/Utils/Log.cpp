@@ -1,5 +1,6 @@
 #include "Log.h"
 #include "DateUtil.h"
+#include <stdarg.h>
 std::ofstream* mLogFile = NULL;
 std::ostream* outputstream = NULL;
 static char* ERRTAG = " [ERROR] ";
@@ -51,6 +52,9 @@ bool errlog(char* strarr...) {
 		std::cout << "OUTPUTSTREAM ERROR!\n";
 		return false;
 	}
+	memset(timestrbuf1, 0, 30);
+	getFormattedTime(timestrbuf1, time(0));
+	(*outputstream) << timestrbuf1 << ERRTAG << SPLITC << strarr << std::endl;
 	/*
 	if (num < 1 || !strarr || num > MAXNUM) {
 		//Reserved Position
@@ -83,6 +87,11 @@ bool inflog(char* strarr...) {
 		std::cout << "OUTPUTSTREAM ERROR!\n";
 		return false;
 	}
+	memset(timestrbuf2, 0, 30);
+	getFormattedTime(timestrbuf2, time(0));
+	(*outputstream) << timestrbuf2 << INFTAG << SPLITC << strarr << std::endl;
+	//va_list valist;
+
 	/*
 	if (num < 1 || !strarr || num > MAXNUM) {
 		//Reserved Position

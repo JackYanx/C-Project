@@ -16,6 +16,8 @@ char logbuffer[32];
 //static HBITMAP backgroundBitmap = NULL;
 /*本窗口DC像素大小,需要根据游戏初始数据进行更改*/
 static int cxClientPix, cyClientPix;
+static HBITMAP bufferBmp;
+static HDC bufferDC = NULL, drawDC = NULL;
 static GameController localGameController;
 // 窗口处理消息过程(回调函数)
 LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -33,11 +35,11 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 	{
 		/*从上一个窗口获取输入信息*/
 		GameInfo gi;
-		gi.boardLength = 40;
-		gi.boardHeight = 20;
-		gi.mineNum = 10;
+		gi.boardLength = 20;
+		gi.boardHeight = 16;
+		gi.mineNum = 39;
 		gi.playerName = L"TestPlayer";
-		gi.gameModel = new MineSweepingGame(40, 20, 10);
+		gi.gameModel = new MineSweepingGame(20, 16, 39);
 		/**/
 
 		cxClientPix = 0;
@@ -46,9 +48,22 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 		/*初始化Canve*/
 		localGameController.initialize(&gi, phwnd, hInstance[2],&cxClientPix, &cyClientPix);
 
+		HDC hdc = GetDC(phwnd); //获取设备
+
+		bufferDC = CreateCompatibleDC(hdc); //给设备分配一个内存空间
+
+		drawDC = CreateCompatibleDC(hdc);
+
+		bufferBmp = CreateCompatibleBitmap(hdc, cxClientPix, cyClientPix); //创建一个cxClient, cyClient大小并且适应DC设备环境的位图
+
+		ReleaseDC(phwnd, hdc);
+
+		SelectObject(bufferDC, bufferBmp);
+
 		inflog("GameCanveSize: w:",itoa(cxClientPix, logbuffer, 10),"px | h:", itoa(cyClientPix, logbuffer, 10),"px.");
 		/*第一次绘制*/
-		localGameController.draw(phwnd);
+		//localGameController.draw(phwnd);
+		
 
 		//set_window_size(phwnd, 900, 600);
 		/*
@@ -74,18 +89,31 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 		PAINTSTRUCT ps;
 		/*响应WM_PAINT时必须在内容中添加BeginPaint与EndPaint,否则WM_PAINT会导致无效区域的背景被擦除;本函数返回HDC绘图上下文*/
 		HDC hdc = BeginPaint(hwnd[2], &ps);
-
+		localGameController.draw(hdc, bufferDC, drawDC, bufferBmp);
+		/*
+		HBITMAP hBitmap_num3 = (HBITMAP)LoadImage(hInstance[2], L"res\\bitmap\\msg-num3.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);//LoadBitmap(hInstance[2], L"res\\bitmap\\msg-num3.bmp");
+		SelectObject(drawDC, hBitmap_num3);
+		BitBlt(bufferDC, 50, 50, 16, 16, drawDC, 0, 0, SRCCOPY);
+		BitBlt(hdc, 0, 0, cxClientPix, cyClientPix, bufferDC, 0, 0, SRCCOPY);
+		BitmapHelper te(L"res\\bitmap\\msg-num2.bmp");
+		te.ShowOnDevice(hdc,200,200);
+		*/
 		/*
 		* 内容绘制
 		*/
 		//bitmap_num5.ShowOnDevice(hdc,100,100);
 
-
 		/*结束绘图,释放绘图区*/
 		EndPaint(hwnd[2], &ps);
 		break;
 	}
-
+				   /*
+	case WM_SIZE: {
+		HDC hdc = GetDC(phwnd);
+		bufferBmp = CreateCompatibleBitmap(hdc, cxClientPix, cyClientPix);
+		ReleaseDC(phwnd, hdc);
+	}
+	*/
 	case WM_COMMAND:
 	{
 
@@ -129,7 +157,7 @@ void RegisterWindow_GameMain(HINSTANCE hInstance) {
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.hbrBackground = NULL;//(HBRUSH)(COLOR_WINDOW + 1);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = regClassName[2];
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);

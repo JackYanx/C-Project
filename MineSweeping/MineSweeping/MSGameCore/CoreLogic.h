@@ -48,6 +48,8 @@ public:
 	MineSweepingGame(int bl, int bh, int wn);
 	~MineSweepingGame();
 	void printCb(GirdBox**);
+	const GirdBox** getForeGameBoard();
+	const GirdBox** getBackGameBoard();
 	void tapGirdBox(int x, int y);
 	int getGameStatus();
 };

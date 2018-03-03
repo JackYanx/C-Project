@@ -2,7 +2,7 @@
 
 #include "Window_Start.h"
 #include "Window_GameOption.h"
-#define INIT_DELAY_TIME 2
+#define INIT_DELAY_TIME 0
 
 //bool volatile bThreadOn = true;
 void _cdecl wndSwitch(PVOID param);

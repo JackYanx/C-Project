@@ -42,7 +42,6 @@ void MineSweepingGame::initCb(int* paramSetting) {
 }
 void MineSweepingGame::initGirdBoxes() {
 	int i, j;
-	/*æ³¨æ„è¿™é‡Œçš„äºŒç»´æ•°ç»„åˆ†é…ï¼ŒboardLength(è¿™é‡Œåº”å½“æ”¹ä¸ºWidthæ›´åˆé€‚)ä¸boardHeightåˆ†åˆ«æŒ‡GameBoardçš„Xä¸Yå¤§å°èŒƒå›´(å…ˆå®½åº¦å†é«˜åº¦)ï¼Œæ³¨æ„ä¸èƒ½å†™å*/
 	foregroundBoard = new GirdBox*[boardLength];
 	backgroundBoard = new GirdBox*[boardLength];
 	for (i = 0; i < boardLength; i++) {
@@ -142,6 +141,25 @@ void MineSweepingGame::setSrdMineNum(int x, int y) {
 void MineSweepingGame::printCb(GirdBox** boardMap) {
 
 }
+
+const GirdBox** MineSweepingGame::getForeGameBoard() {
+	return (const GirdBox**)foregroundBoard;
+	/*
+	if () {
+
+	}
+	*/
+}
+
+const GirdBox** MineSweepingGame::getBackGameBoard() {
+	return (const GirdBox**)backgroundBoard;
+		/*
+		if () {
+
+		}
+		*/
+}
+
 void MineSweepingGame::tapGirdBox(int x, int y) {
 	if (foregroundBoard[x][y].gStatus != GirdBoxStatus::FLAGABOVE) {
 		return;
@@ -166,27 +184,27 @@ int MineSweepingGame::getGameStatus() {
 	return 0;
 }
 void MineSweepingGame::uncoverGirdBox(int x, int y) {
-	/*åˆ¤æ–­ç‚¹å‡»çš„æ–¹æ ¼æ˜¯å¦ä¸ºå·²æ‰“å¼€çŠ¶æ€,æ’æ——å­çŠ¶æ€,æœ‰é—®å·å¾…å®šçŠ¶æ€,å¦‚æœæ˜¯,ä¸è¿›è¡Œæ‰“å¼€é€’å½’*/
+	/*ÅĞ¶Ïµã»÷µÄ·½¸ñÊÇ·ñÎªÒÑ´ò¿ª×´Ì¬,²åÆì×Ó×´Ì¬,ÓĞÎÊºÅ´ı¶¨×´Ì¬,Èç¹ûÊÇ,²»½øĞĞ´ò¿ªµİ¹é*/
 	if (foregroundBoard[x][y].gStatus != GirdBoxStatus::UNTAPPED || foregroundBoard[x][y].gStatus == GirdBoxStatus::FLAGABOVE || foregroundBoard[x][y].gStatus == GirdBoxStatus::UNKNOWEN) {
 		return;
 	}
-	/*åˆ¤æ–­æ‰€æ‰“å¼€çš„æ–¹æ ¼æ˜¯å¦ä¸ºåœ°é›·*/
+	/*ÅĞ¶ÏËù´ò¿ªµÄ·½¸ñÊÇ·ñÎªµØÀ×*/
 	if (backgroundBoard[x][y].gStatus == GirdBoxStatus::MINE) {
 		foregroundBoard[x][y].gStatus = GirdBoxStatus::MINE;
 		uncoveredGBNum++;
 		return;
 	}
-	/*åˆ¤æ–­æ‰€æ‰“å¼€çš„æ–¹æ ¼æ˜¯å¦ä¸ºæ•°å­—(å‘¨å›´æœ‰åœ°é›·)*/
+	/*ÅĞ¶ÏËù´ò¿ªµÄ·½¸ñÊÇ·ñÎªÊı×Ö(ÖÜÎ§ÓĞµØÀ×)*/
 	if (backgroundBoard[x][y].gStatus == GirdBoxStatus::MINESRD) {
 		foregroundBoard[x][y].gStatus = GirdBoxStatus::MINESRD;
 		foregroundBoard[x][y].srdMineCt = backgroundBoard[x][y].srdMineCt;
 		uncoveredGBNum++;
 		return;
 	}
-	/*é»˜è®¤æƒ…å†µæŒ‰ç…§ç©ºæ–¹å—è¿›è¡Œå¤„ç†*/
+	/*Ä¬ÈÏÇé¿ö°´ÕÕ¿Õ·½¿é½øĞĞ´¦Àí*/
 	foregroundBoard[x][y].gStatus = GirdBoxStatus::EMPTY;
 	uncoveredGBNum++;
-	/*å¯¹å½“å‰æ–¹æ ¼ä¸Šä¸‹å·¦å³è¿›è¡Œé€’å½’æ‰“å¼€*/
+	/*¶Ôµ±Ç°·½¸ñÉÏÏÂ×óÓÒ½øĞĞµİ¹é´ò¿ª*/
 	if (x != 0) {
 		uncoverGirdBox(x - 1, y);
 	}
