@@ -19,6 +19,70 @@ static int cxClientPix, cyClientPix;
 static HBITMAP bufferBmp;
 static HDC bufferDC = NULL, drawDC = NULL;
 static GameController localGameController;
+
+static int mpx = 0;
+static int mpy = 0;
+
+static int ldpx = 0;
+static int ldpy = 0;
+
+static int rdpx = 0;
+static int rdpy = 0;
+
+static int lupx = 0;
+static int lupy = 0;
+
+static int rupx = 0;
+static int rupy = 0;
+
+static bool lbs = 0;
+static bool rbs = 0;
+
+static TCHAR numbuf[20] = { 0 };
+
+void showMousePointerInfo(HDC hdc) {
+	SetTextColor(hdc, RGB(255, 255, 255));
+	SetBkColor(hdc, RGB(0, 0, 0));
+	SetBkMode(hdc, OPAQUE);
+
+	TextOut(hdc, 10, 10, L"MousePosi", lstrlen(L"MousePosi"));
+	wsprintf(numbuf, L"X: %4d    ", mpx);
+	TextOut(hdc, 10, 30, numbuf, lstrlen(numbuf));
+	wsprintf(numbuf, L"Y: %4d    ", mpy);
+	TextOut(hdc, 10, 50, numbuf, lstrlen(numbuf));
+
+	TextOut(hdc, 130, 10, L"LastLBDPosi", lstrlen(L"LastLBDPosi"));
+	wsprintf(numbuf, L"X: %4d    ", ldpx);
+	TextOut(hdc, 130, 30, numbuf, lstrlen(numbuf));
+	wsprintf(numbuf, L"Y: %4d    ", ldpy);
+	TextOut(hdc, 130, 50, numbuf, lstrlen(numbuf));
+
+	TextOut(hdc, 250, 10, L"LastRBDPosi", lstrlen(L"LastRBDPosi"));
+	wsprintf(numbuf, L"X: %4d    ", rdpx);
+	TextOut(hdc, 250, 30, numbuf, lstrlen(numbuf));
+	wsprintf(numbuf, L"Y: %4d    ", rdpy);
+	TextOut(hdc, 250, 50, numbuf, lstrlen(numbuf));
+
+	TextOut(hdc, 370, 10, L"LastLBUPosi", lstrlen(L"LastLBUPosi"));
+	wsprintf(numbuf, L"X: %4d    ", lupx);
+	TextOut(hdc, 370, 30, numbuf, lstrlen(numbuf));
+	wsprintf(numbuf, L"Y: %4d    ", lupy);
+	TextOut(hdc, 370, 50, numbuf, lstrlen(numbuf));
+
+	TextOut(hdc, 490, 10, L"LastRBUPosi", lstrlen(L"LastRBUPosi"));
+	wsprintf(numbuf, L"X: %4d    ", rupx);
+	TextOut(hdc, 490, 30, numbuf, lstrlen(numbuf));
+	wsprintf(numbuf, L"Y: %4d    ", rupy);
+	TextOut(hdc, 490, 50, numbuf, lstrlen(numbuf));
+
+	TextOut(hdc, 610, 10, L"PointerStatus", lstrlen(L"PointerStatus"));
+	wsprintf(numbuf, L"Left : %d ", lbs);
+	TextOut(hdc, 610, 30, numbuf, lstrlen(numbuf));
+	wsprintf(numbuf, L"Right: %d ", rbs);
+	TextOut(hdc, 610, 50, numbuf, lstrlen(numbuf));
+
+
+}
 // 窗口处理消息过程(回调函数)
 LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -35,11 +99,11 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 	{
 		/*从上一个窗口获取输入信息*/
 		GameInfo gi;
-		gi.boardLength = 20;
-		gi.boardHeight = 16;
+		gi.boardLength = 40;
+		gi.boardHeight = 30;
 		gi.mineNum = 39;
 		gi.playerName = L"TestPlayer";
-		gi.gameModel = new MineSweepingGame(20, 16, 39);
+		gi.gameModel = new MineSweepingGame(40, 30, 39);
 		/**/
 
 		cxClientPix = 0;
@@ -90,6 +154,7 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 		/*响应WM_PAINT时必须在内容中添加BeginPaint与EndPaint,否则WM_PAINT会导致无效区域的背景被擦除;本函数返回HDC绘图上下文*/
 		HDC hdc = BeginPaint(hwnd[2], &ps);
 		localGameController.draw(hdc, bufferDC, drawDC, bufferBmp);
+		showMousePointerInfo(hdc);
 		/*
 		HBITMAP hBitmap_num3 = (HBITMAP)LoadImage(hInstance[2], L"res\\bitmap\\msg-num3.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);//LoadBitmap(hInstance[2], L"res\\bitmap\\msg-num3.bmp");
 		SelectObject(drawDC, hBitmap_num3);
@@ -114,6 +179,52 @@ LRESULT CALLBACK WindowProc_GameMain(HWND phwnd, UINT msg, WPARAM wParam, LPARAM
 		ReleaseDC(phwnd, hdc);
 	}
 	*/
+
+	case WM_MOUSEMOVE: {
+		memset(numbuf, 0, sizeof(TCHAR) * 20);
+		mpx = (int)LOWORD(lParam);
+		mpy = (int)HIWORD(lParam);
+		HDC hdc = GetDC(phwnd);
+		showMousePointerInfo(hdc);
+		ReleaseDC(phwnd, hdc);
+		break;
+	}
+	case WM_LBUTTONDOWN: {
+		lbs = 1;
+		ldpx = mpx;
+		ldpy = mpy;
+		HDC hdc = GetDC(phwnd);
+		showMousePointerInfo(hdc);
+		ReleaseDC(phwnd, hdc);
+		break;
+	}
+	case WM_RBUTTONDOWN: {
+		rbs = 1;
+		rdpx = mpx;
+		rdpy = mpy;
+		HDC hdc = GetDC(phwnd);
+		showMousePointerInfo(hdc);
+		ReleaseDC(phwnd, hdc);
+		break;
+	}
+	case WM_LBUTTONUP: {
+		lbs = 0;
+		lupx = mpx;
+		lupy = mpy;
+		HDC hdc = GetDC(phwnd);
+		showMousePointerInfo(hdc);
+		ReleaseDC(phwnd, hdc);
+		break;
+	}
+	case WM_RBUTTONUP: {
+		rbs = 0;
+		rupx = mpx;
+		rupy = mpy;
+		HDC hdc = GetDC(phwnd);
+		showMousePointerInfo(hdc);
+		ReleaseDC(phwnd, hdc);
+		break;
+	}
 	case WM_COMMAND:
 	{
 

@@ -19,7 +19,7 @@ wndGeoAttr wga[WND_NUM] = {
 };
 HINSTANCE initInstance;
 HINSTANCE inithPrevInstance;
-LPSTR initlpCmdLine;
+LPWSTR initlpCmdLine;
 int initnCmdShow;
 int FullScreenWidth;
 int FullScreenHeight;

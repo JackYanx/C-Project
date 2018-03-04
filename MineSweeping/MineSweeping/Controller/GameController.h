@@ -47,10 +47,10 @@ private:
 	int boardHeight;
 	int mineNum;
 	//
-	static const int MarginTopPix = 40;
+	static const int MarginTopPix = 70;
 	static const int MarginBottomPix = 70;
-	static const int MarginLeftPix = 30;
-	static const int MarginRightPix = 30;
+	static const int MarginLeftPix = 40;
+	static const int MarginRightPix = 60;
 	static const int GirdImageWidthPix = 16;
 	static const int GirdImageHeightPix = 16;
 	//HDC Pixel Size

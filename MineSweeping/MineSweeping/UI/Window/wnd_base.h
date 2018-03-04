@@ -39,7 +39,7 @@ extern LPCWSTR wndTitle[WND_NUM];
 extern wndGeoAttr wga[WND_NUM];
 extern HINSTANCE initInstance;
 extern HINSTANCE inithPrevInstance;
-extern LPSTR initlpCmdLine;
+extern LPWSTR initlpCmdLine;
 extern int initnCmdShow;
 extern int FullScreenWidth;
 extern int FullScreenHeight;

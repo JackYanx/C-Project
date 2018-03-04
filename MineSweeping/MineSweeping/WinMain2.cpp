@@ -2,7 +2,8 @@
 #include <process.h>
 #include "UI\WndSummary.h"
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+
+int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	setlogfile("D:\\gamelog.log");
 	inflog("_APPLICATION INITIALIZING_");

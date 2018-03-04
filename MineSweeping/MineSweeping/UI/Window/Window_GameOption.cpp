@@ -175,13 +175,13 @@ LRESULT CALLBACK WindowProc_GameOption(HWND phwnd, UINT msg, WPARAM wParam, LPAR
 		case 3301: {
 			memset(combobox_game_rating_select_ITEM_NAME, 0, sizeof(combobox_game_rating_select_ITEM_NAME));
 			GetWindowText(combobox_game_rating_select, combobox_game_rating_select_ITEM_NAME, 100);
-			
+			/*
 			setlocale(LC_ALL, "");
 			FILE* tFile = fopen("D:\\12333.txt", "a+");
 			fprintf(tFile, "%ws", combobox_game_rating_select_ITEM_NAME);
 			fprintf(tFile, "%s", "\n");
 			fclose(tFile);
-
+			*/
 			break;
 		}
 
@@ -238,6 +238,7 @@ LRESULT CALLBACK WindowProc_GameOption(HWND phwnd, UINT msg, WPARAM wParam, LPAR
 	}
 		// 窗口关闭消息
 	case WM_CLOSE:
+		
 		DestroyWindow(hwnd[1]);
 		break;
 		// 窗口销毁消息

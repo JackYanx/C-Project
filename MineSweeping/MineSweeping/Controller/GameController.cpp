@@ -5,22 +5,22 @@
 #include "../resource1.h"
 
 /*bitmapres*/
-static BITMAP oBitmap_empty;
-static BITMAP oBitmap_flagabove;
-static BITMAP oBitmap_mine;
-static BITMAP oBitmap_mineexploded;
-static BITMAP oBitmap_nomine;
+//static BITMAP oBitmap_empty;
+//static BITMAP oBitmap_flagabove;
+//static BITMAP oBitmap_mine;
+//static BITMAP oBitmap_mineexploded;
+//static BITMAP oBitmap_nomine;
 //static BITMAP oBitmap_nums[8];
-static BITMAP oBitmap_num1;
-static BITMAP oBitmap_num2;
-static BITMAP oBitmap_num3;
-static BITMAP oBitmap_num4;
-static BITMAP oBitmap_num5;
-static BITMAP oBitmap_num6;
-static BITMAP oBitmap_num7;
-static BITMAP oBitmap_num8;
-static BITMAP oBitmap_uncovered;
-static BITMAP oBitmap_unknown;
+//static BITMAP oBitmap_num1;
+//static BITMAP oBitmap_num2;
+//static BITMAP oBitmap_num3;
+//static BITMAP oBitmap_num4;
+//static BITMAP oBitmap_num5;
+//static BITMAP oBitmap_num6;
+//static BITMAP oBitmap_num7;
+//static BITMAP oBitmap_num8;
+//static BITMAP oBitmap_uncovered;
+//static BITMAP oBitmap_unknown;
 
 static HBITMAP hBitmap_empty = NULL;
 static HBITMAP hBitmap_flagabove = NULL;
@@ -70,8 +70,6 @@ BOOL WINAPI GameController::draw(HWND hwnd) {
 	/*获取设备上下文*/
 	HDC hdc = GetDC(hwnd);
 
-
-
 	HDC backgroundDC = CreateCompatibleDC(hdc);
 	HBITMAP backgroundBitmap = CreateCompatibleBitmap(hdc, canveWidthPix, canveHeightPix);
 
@@ -87,11 +85,9 @@ bool selectHBmpObject(HDC& drawDC,const GirdBox& gb) {
 	switch (gb.gStatus)
 	{
 	case GirdBoxStatus::EMPTY:
-		//infolog
 		SelectObject(drawDC, hBitmap_empty);
 		break;
 	case GirdBoxStatus::MINE:
-		inflog("Select Mine Bmp To HDC");
 		SelectObject(drawDC, hBitmap_mine);
 		break;
 	case GirdBoxStatus::MINESRD:
@@ -171,114 +167,59 @@ BOOL GameController::calculateCanveSize() {
 	return true;
 }
 BOOL GameController::loadRes() {
-	//(HBITMAP)LoadImage(hInstance[2], L"res\\bitmap\\msg-num3.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	/*
-	hBitmap_empty = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-empty.bmp");
-	GetObject(hBitmap_empty, sizeof(Bitmap), &oBitmap_empty);
-
-	hBitmap_flagabove = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-flagabove.bmp");
-	GetObject(hBitmap_flagabove, sizeof(Bitmap), &oBitmap_flagabove);
-
-	hBitmap_mine = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-mine.bmp");
-	GetObject(hBitmap_mine, sizeof(Bitmap), &oBitmap_mine);
-
-	hBitmap_mineexploded = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-mineexploded.bmp");
-	GetObject(hBitmap_mineexploded, sizeof(Bitmap), &oBitmap_mineexploded);
-
-	hBitmap_nomine = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-nomine.bmp");
-	GetObject(hBitmap_nomine, sizeof(Bitmap), &oBitmap_nomine);
-
-	hBitmap_num1 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num1.bmp");
-	GetObject(hBitmap_num1, sizeof(Bitmap), &oBitmap_num1);
-	hBitmap_nums[1] = hBitmap_num1;
-
-	hBitmap_num2 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num2.bmp");
-	GetObject(hBitmap_num2, sizeof(Bitmap), &oBitmap_num2);
-	hBitmap_nums[2] = hBitmap_num2;
-
-	hBitmap_num3 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num3.bmp");
-	GetObject(hBitmap_num3, sizeof(Bitmap), &oBitmap_num3);
-	hBitmap_nums[3] = hBitmap_num3;
-
-	hBitmap_num4 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num4.bmp");
-	GetObject(hBitmap_num4, sizeof(Bitmap), &oBitmap_num4);
-	hBitmap_nums[4] = hBitmap_num4;
-
-	hBitmap_num5 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num5.bmp");
-	GetObject(hBitmap_num5, sizeof(Bitmap), &oBitmap_num5);
-	hBitmap_nums[5] = hBitmap_num5;
-
-	hBitmap_num6 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num6.bmp");
-	GetObject(hBitmap_num6, sizeof(Bitmap), &oBitmap_num6);
-	hBitmap_nums[6] = hBitmap_num6;
-
-	hBitmap_num7 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num7.bmp");
-	GetObject(hBitmap_num7, sizeof(Bitmap), &oBitmap_num7);
-	hBitmap_nums[7] = hBitmap_num7;
-
-	hBitmap_num8 = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-num8.bmp");
-	GetObject(hBitmap_num8, sizeof(Bitmap), &oBitmap_num8);
-	hBitmap_nums[8] = hBitmap_num8;
-
-	hBitmap_uncovered = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-uncovered.bmp");
-	GetObject(hBitmap_uncovered, sizeof(Bitmap), &oBitmap_uncovered);
-
-	hBitmap_unknown = LoadBitmap(cHINSTANCE, L"res\\bitmap\\msg-unknown.bmp");
-	GetObject(hBitmap_unknown, sizeof(Bitmap), &oBitmap_unknown);
-
-	*/
+	
 	hBitmap_empty = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-empty.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_empty, sizeof(Bitmap), &oBitmap_empty);
+	//GetObject(hBitmap_empty, sizeof(Bitmap), &oBitmap_empty);
 
 	hBitmap_flagabove = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-flagabove.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_flagabove, sizeof(Bitmap), &oBitmap_flagabove);
+	//GetObject(hBitmap_flagabove, sizeof(Bitmap), &oBitmap_flagabove);
 
 	hBitmap_mine = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-mine.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_mine, sizeof(Bitmap), &oBitmap_mine);
+	//GetObject(hBitmap_mine, sizeof(Bitmap), &oBitmap_mine);
 
 	hBitmap_mineexploded = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-mineexploded.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_mineexploded, sizeof(Bitmap), &oBitmap_mineexploded);
+	//GetObject(hBitmap_mineexploded, sizeof(Bitmap), &oBitmap_mineexploded);
 
 	hBitmap_nomine = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-nomine.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_nomine, sizeof(Bitmap), &oBitmap_nomine);
+	//GetObject(hBitmap_nomine, sizeof(Bitmap), &oBitmap_nomine);
 
 	hBitmap_num1 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num1.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num1, sizeof(Bitmap), &oBitmap_num1);
+	//GetObject(hBitmap_num1, sizeof(Bitmap), &oBitmap_num1);
 	hBitmap_nums[0] = hBitmap_num1;
 
 	hBitmap_num2 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num2.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num2, sizeof(Bitmap), &oBitmap_num2);
+	//GetObject(hBitmap_num2, sizeof(Bitmap), &oBitmap_num2);
 	hBitmap_nums[1] = hBitmap_num2;
 
 	hBitmap_num3 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num3.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num3, sizeof(Bitmap), &oBitmap_num3);
+	//GetObject(hBitmap_num3, sizeof(Bitmap), &oBitmap_num3);
 	hBitmap_nums[2] = hBitmap_num3;
 
 	hBitmap_num4 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num4.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num4, sizeof(Bitmap), &oBitmap_num4);
+	//GetObject(hBitmap_num4, sizeof(Bitmap), &oBitmap_num4);
 	hBitmap_nums[3] = hBitmap_num4;
 
 	hBitmap_num5 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num5.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num5, sizeof(Bitmap), &oBitmap_num5);
+	//GetObject(hBitmap_num5, sizeof(Bitmap), &oBitmap_num5);
 	hBitmap_nums[4] = hBitmap_num5;
 
 	hBitmap_num6 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num6.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num6, sizeof(Bitmap), &oBitmap_num6);
+	//GetObject(hBitmap_num6, sizeof(Bitmap), &oBitmap_num6);
 	hBitmap_nums[5] = hBitmap_num6;
 
 	hBitmap_num7 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num7.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num7, sizeof(Bitmap), &oBitmap_num7);
+	//GetObject(hBitmap_num7, sizeof(Bitmap), &oBitmap_num7);
 	hBitmap_nums[6] = hBitmap_num7;
 
 	hBitmap_num8 = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-num8.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_num8, sizeof(Bitmap), &oBitmap_num8);
+	//GetObject(hBitmap_num8, sizeof(Bitmap), &oBitmap_num8);
 	hBitmap_nums[7] = hBitmap_num8;
 
 	hBitmap_uncovered = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-uncovered.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_uncovered, sizeof(Bitmap), &oBitmap_uncovered);
+	//GetObject(hBitmap_uncovered, sizeof(Bitmap), &oBitmap_uncovered);
 
 	hBitmap_unknown = (HBITMAP)LoadImage(cHINSTANCE, L"res\\bitmap\\msg-unknown.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-	GetObject(hBitmap_unknown, sizeof(Bitmap), &oBitmap_unknown);
+	//GetObject(hBitmap_unknown, sizeof(Bitmap), &oBitmap_unknown);
 	inflog("Bitmap Res Loaded");
 	return true;
 }
